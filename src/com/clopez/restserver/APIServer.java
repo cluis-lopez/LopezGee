@@ -13,20 +13,24 @@ import java.net.Socket;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class APIServer implements Runnable {
 
 	private static final String newLine = "\r\n";
+	private Logger log;
 	private Map<String, Class> mountPoints;
 	private Map<String, String> headerFields;
 	private String body;
 	private Socket socket;
 
-	public APIServer(Socket s, Map<String, Class> m) {
-		this.socket = s;
+	public APIServer(Socket s, Map<String, Class> m, Logger log) {
+		socket = s;
 		mountPoints = m;
 		headerFields = new HashMap<>();
 		body = null;
+		this.log = log;
 	}
 
 	@Override
@@ -45,9 +49,9 @@ public class APIServer implements Runnable {
 
 		// read first line of request
 		String request = in.readLine();
-		if (request == null)
+		if (request == null || request.length() == 0)
 			return;
-
+		
 		// Rest of Header
 		while (true) {
 			String header = in.readLine();
@@ -59,21 +63,22 @@ public class APIServer implements Runnable {
 		// Body, if any
 		if (headerFields.get("Content-Length") != null && Integer.parseInt(headerFields.get("Content-Length")) > 0) {
 			StringBuilder sb = new StringBuilder();
-			char[] charBuffer = new char[128];
-			int bytesRead = -1;
-			while ((bytesRead = in.read(charBuffer)) > 0)
-				sb.append(charBuffer, 0, bytesRead);
-
+			char[] cb = new char[Integer.parseInt(headerFields.get("Content-Length"))];
+			int bytesread = in.read(cb, 0, Integer.parseInt(headerFields.get("Content-Length")));
+			sb.append(cb, 0, bytesread);
 			body = sb.toString();
 		}
-
+		
 		HeaderDecoder reqLine = new HeaderDecoder(request);
-		// Debug
-		System.err.println(reqLine.toString());
-		for (String s : headerFields.keySet())
-			System.err.println(s + "  =>  " + headerFields.get(s));
-		System.err.println("BODY");
-		System.err.println(body);
+		// Logging
+		
+		log.log(Level.INFO, "Serving {0}", reqLine.command + " "+ reqLine.resource + " from " + headerFields.get("Origin"));
+		
+		/*
+		 * System.err.println(reqLine.toString()); for (String s :
+		 * headerFields.keySet()) System.err.println(s + "  =>  " +
+		 * headerFields.get(s)); System.err.println("BODY"); System.err.println(body);
+		 */
 
 		String response = "";
 
@@ -82,12 +87,14 @@ public class APIServer implements Runnable {
 		if (reqValid && reqLine.command.equals("GET"))
 			response = processGet(reqLine);
 		if (reqValid && reqLine.command.equals("POST"))
-			processPost(reqLine);
+			response = processPost(reqLine);
 		if (!reqValid) // Bad Request
 			response = "HTTP/1.0 400 Bad Request" + newLine + newLine;
 
 		pout.print(response);
 		pout.close();
+		out.close();
+		in.close();
 
 	}
 
@@ -112,7 +119,8 @@ public class APIServer implements Runnable {
 				ret = (String[]) ob.getClass().getMethod("doGet", Map.class).invoke(ob, req.params);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				e.printStackTrace();
+				log.log(Level.SEVERE, "Cannot instantiate servlet");
+				log.log(Level.SEVERE, e.toString());
 			}
 			resp = "HTTP/1.0 200 OK" + newLine + "Content-Type: " + ret[0] + newLine + "Date: " + new Date() + newLine
 					+ "Content-length: " + ret[1].length() + newLine + newLine + ret[1];
@@ -145,9 +153,10 @@ public class APIServer implements Runnable {
 			}
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException | UnsupportedEncodingException e) {
-			e.printStackTrace();
+			log.log(Level.SEVERE, "Cannot instantiate servlet");
+			log.log(Level.SEVERE, e.toString());
 		}
-
+		
 		return resp;
 	}
 }
