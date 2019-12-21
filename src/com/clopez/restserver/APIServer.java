@@ -51,7 +51,7 @@ public class APIServer implements Runnable {
 		String request = in.readLine();
 		if (request == null || request.length() == 0)
 			return;
-		
+
 		// Rest of Header
 		while (true) {
 			String header = in.readLine();
@@ -68,17 +68,12 @@ public class APIServer implements Runnable {
 			sb.append(cb, 0, bytesread);
 			body = sb.toString();
 		}
-		
+
 		HeaderDecoder reqLine = new HeaderDecoder(request);
 		// Logging
-		
-		log.log(Level.INFO, "Serving {0}", reqLine.command + " "+ reqLine.resource + " from " + headerFields.get("Origin"));
-		
-		/*
-		 * System.err.println(reqLine.toString()); for (String s :
-		 * headerFields.keySet()) System.err.println(s + "  =>  " +
-		 * headerFields.get(s)); System.err.println("BODY"); System.err.println(body);
-		 */
+
+		log.log(Level.INFO, "Serving {0}",
+				reqLine.command + " " + reqLine.resource + " from " + headerFields.get("Origin"));
 
 		String response = "";
 
@@ -156,7 +151,7 @@ public class APIServer implements Runnable {
 			log.log(Level.SEVERE, "Cannot instantiate servlet");
 			log.log(Level.SEVERE, e.toString());
 		}
-		
+
 		return resp;
 	}
 }

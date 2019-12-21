@@ -11,7 +11,7 @@ public class BodyDecoder {
 	public BodyDecoder(String body) throws UnsupportedEncodingException{
 		params = new HashMap<>();
 		for (String s : body.split("&")) {
-			int idx = s.indexOf("=");
+			int idx = s.indexOf('=');
 			params.put(URLDecoder.decode(s.substring(0, idx), "UTF-8"),
 					URLDecoder.decode(s.substring(idx + 1), "UTF-8"));
 		}
