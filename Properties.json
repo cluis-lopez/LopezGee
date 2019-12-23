@@ -1,0 +1,9 @@
+{
+    "Port": 8080,
+    "Root": ".",
+    "AppPath": "com.clopez.restserver",
+    "Servlets": [
+        { "MountPoint": "/test", "ClassName": "Tester"},
+        { "MountPoint": "/other", "ClassName": "Other"}
+   ]
+}
