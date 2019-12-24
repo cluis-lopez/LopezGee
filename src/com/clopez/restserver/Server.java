@@ -1,16 +1,12 @@
 package com.clopez.restserver;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.FileHandler;
@@ -19,23 +15,21 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 public class Server {
 
 	private static Map<String, Class> mountPoints;
 	private static Logger log = Logger.getLogger("LopezGee");
 	private static FileHandler fd;
-	private static Properties props = new Properties();
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 
 		// Inicializando Logger
 		System.setProperty("java.util.logging.SimpleFormatter.format", 
 				"%1$tF %1$tT %4$s %5$s%6$s%n");
 		
 		try {
-			fd = new FileHandler("LopezGeeServer.log");
+			fd = new FileHandler("LopezGeeServer.log", true);
 		} catch (SecurityException | IOException e1) {
 			System.err.println("No se puede abrir el fichero de log");
 			e1.printStackTrace();
@@ -48,10 +42,17 @@ public class Server {
 
 		// Inicializando fichero de propiedades
 		Gson json = new Gson();
-		FileReader reader = new FileReader("Properties.json");
-		Type listType = new TypeToken<ExtVars>(){}.getType();
-		ExtVars props = json.fromJson(reader, listType);
+		FileReader reader = null;
 		
+		try {
+			reader = new FileReader("Properties.json");
+		} catch (FileNotFoundException e) {
+			log.log(Level.SEVERE, "Cannot open properties file. Exiting");
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+			System.err.println("No se puede abrir e ficherp de propiedades");
+		}
+		
+		ExtVars props = json.fromJson(reader, ExtVars.class);
 		// Mapeando puntos de montaje //
 		mountPoints = new HashMap<>();
 		if (props.Servlets.size() ==0) {
@@ -59,19 +60,33 @@ public class Server {
 		} else {
 			for (Map<String, String> m: props.Servlets) {
 				mount(m.get("MountPoint"), props.AppPath + "." + m.get("ClassName"));
-				log.log(Level.INFO, "Mounting URI " + m.get("MountPoint") + " into " + props.AppPath + "." + m.get("ClassName"));
 			}
 		}
 			
-		//mount("/Tester", "com.clopez.restserver.Tester");
 
-		final ServerSocket server = new ServerSocket(props.Port);
+		ServerSocket server = null;
+		
+		try {
+			server = new ServerSocket(props.Port);
+		} catch (IOException e) {
+			log.log(Level.SEVERE, "Cannot start Server Socket at port: " + props.Port);
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+			System.err.println("No se puede arrancar el server en el puerto " + props.Port);
+			e.printStackTrace();
+		}
+		
 		System.out.println("Arrancando el servidor");
 		log.log(Level.INFO, "Server started");
+		log.log(Level.INFO, "Listening at port: " + props.Port);
 
 		Socket client = null;
 		while (true) { // NOSONAR
-			client = server.accept();
+			try {
+				client = server.accept();
+			} catch (IOException e) {
+				log.log(Level.WARNING, "Cannot launch thread to accept client: " + client.toString());
+				log.log(Level.WARNING, Arrays.toString(e.getStackTrace()));
+			}
 			final APIServer request = new APIServer(client, mountPoints, log);
 			Thread thread = new Thread(request);
 			thread.start();
@@ -83,10 +98,13 @@ public class Server {
 		try {
 			cl = Class.forName(className);
 			mountPoints.put(URI, cl);
+			log.log(Level.INFO, "Mounting URI " + URI + " into " + className);
 			System.out.println("La URI " + URI + " apunta al servlet " + className);
 		} catch (ClassNotFoundException e) {
-			System.err.println("No se puede mapear el servlet");
+			System.err.println("No se puede mapear el servlet: " + className);
+			log.log(Level.WARNING, "Cannot map servlet: " + className);
 			e.printStackTrace();
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 		}
 	}
 

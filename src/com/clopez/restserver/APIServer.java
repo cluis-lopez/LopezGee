@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -115,7 +116,7 @@ public class APIServer implements Runnable {
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 				log.log(Level.SEVERE, "Cannot instantiate servlet");
-				log.log(Level.SEVERE, e.toString());
+				log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 			}
 			resp = "HTTP/1.0 200 OK" + newLine + "Content-Type: " + ret[0] + newLine + "Date: " + new Date() + newLine
 					+ "Content-length: " + ret[1].length() + newLine + newLine + ret[1];
@@ -149,7 +150,7 @@ public class APIServer implements Runnable {
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException | UnsupportedEncodingException e) {
 			log.log(Level.SEVERE, "Cannot instantiate servlet");
-			log.log(Level.SEVERE, e.toString());
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 		}
 
 		return resp;

@@ -3,7 +3,7 @@
     "Root": ".",
     "AppPath": "com.clopez.restserver",
     "Servlets": [
-        { "MountPoint": "/test", "ClassName": "Tester"},
+        { "MountPoint": "/Tester", "ClassName": "Tester"},
         { "MountPoint": "/other", "ClassName": "Other"}
    ]
 }
