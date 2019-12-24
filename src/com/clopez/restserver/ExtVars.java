@@ -8,7 +8,7 @@ public class ExtVars {
 	public int Port;
 	public String Root;
 	public String AppPath;
-	public List<Map<String, String>> Servlets;
+	public List<Servlet> Servlets;
 	
 	public ExtVars() {
 		Servlets = new ArrayList<>();
@@ -23,9 +23,8 @@ public class ExtVars {
 		+ "Root Web Server: " + Root +"\n"
 		+ "Servlets Java Path: " + AppPath +"\n"
 		+ "Mount Points" +"(" + Servlets.size() +")\n";
-		for (Map<String, String> m: Servlets)
-			ret = ret + m.get("MountPoint") + " : " + m.get("ClassName") + "\n";
-		
+		for (Servlet s : Servlets)
+			ret = ret + s.MountPoint + " : " + s.ClassName + "Auth: " + s.Auth + "\n";
 		return ret;
 	}
 }

@@ -8,7 +8,6 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +17,7 @@ import com.google.gson.Gson;
 
 public class Server {
 
-	private static Map<String, Class> mountPoints;
+	private static Map<String, Servlet> mountPoints;
 	private static Logger log = Logger.getLogger("LopezGee");
 	private static FileHandler fd;
 
@@ -53,13 +52,14 @@ public class Server {
 		}
 		
 		ExtVars props = json.fromJson(reader, ExtVars.class);
+		
 		// Mapeando puntos de montaje //
 		mountPoints = new HashMap<>();
 		if (props.Servlets.size() ==0) {
 			log.log(Level.INFO, "No mounted servlets");
 		} else {
-			for (Map<String, String> m: props.Servlets) {
-				mount(m.get("MountPoint"), props.AppPath + "." + m.get("ClassName"));
+			for (Servlet s: props.Servlets) {
+				mount(s.MountPoint, props.AppPath + "." + s.ClassName, s);
 			}
 		}
 			
@@ -93,16 +93,15 @@ public class Server {
 		}
 	}
 
-	private static void mount(String URI, String className) {
-		Class cl = null;
+	private static void mount(String URI, String m, Servlet s) {
 		try {
-			cl = Class.forName(className);
-			mountPoints.put(URI, cl);
-			log.log(Level.INFO, "Mounting URI " + URI + " into " + className);
-			System.out.println("La URI " + URI + " apunta al servlet " + className);
+			s.cl = Class.forName(m);
+			mountPoints.put(URI, s);
+			log.log(Level.INFO, "Mounting URI " + URI + " into " + m);
+			System.out.println("La URI " + URI + " apunta al servlet " + s.cl.getCanonicalName());
 		} catch (ClassNotFoundException e) {
-			System.err.println("No se puede mapear el servlet: " + className);
-			log.log(Level.WARNING, "Cannot map servlet: " + className);
+			System.err.println("No se puede mapear el servlet: " + m);
+			log.log(Level.WARNING, "Cannot map servlet: " + m);
 			e.printStackTrace();
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 		}

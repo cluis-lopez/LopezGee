@@ -8,7 +8,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Date;
@@ -21,14 +20,14 @@ public class APIServer implements Runnable {
 
 	private static final String newLine = "\r\n";
 	private Logger log;
-	private Map<String, Class> mountPoints;
+	private Map<String, Servlet> servlets;
 	private Map<String, String> headerFields;
 	private String body;
 	private Socket socket;
 
-	public APIServer(Socket s, Map<String, Class> m, Logger log) {
+	public APIServer(Socket s, Map<String, Servlet> map, Logger log) {
 		socket = s;
-		mountPoints = m;
+		servlets = map;
 		headerFields = new HashMap<>();
 		body = null;
 		this.log = log;
@@ -98,7 +97,7 @@ public class APIServer implements Runnable {
 		String[] ret = new String[2];
 		String resp;
 
-		if (!mountPoints.containsKey(req.resource)) { // No declared miniservlet, expect a file
+		if (!servlets.containsKey(req.resource)) { // No declared miniservlet, expect a file
 			doFile df = new doFile();
 			ret = df.doGet(req.resource.substring(1));
 			if (ret[0].equals("")) { // No file found
@@ -111,7 +110,7 @@ public class APIServer implements Runnable {
 		} else {
 			Object ob = null;
 			try {
-				ob = mountPoints.get(req.resource).newInstance();
+				ob = servlets.get(req.resource).cl.newInstance();
 				ret = (String[]) ob.getClass().getMethod("doGet", Map.class).invoke(ob, req.params);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
@@ -132,12 +131,12 @@ public class APIServer implements Runnable {
 		BodyDecoder bd = null;
 		Object ob = null;
 
-		if (!mountPoints.containsKey(req.resource)) { // No declared miniservlet, invalid request
+		if (!servlets.containsKey(req.resource)) { // No declared miniservlet, invalid request
 			resp = "HTTP/1.0 404 Servlet Not Declared or Found" + newLine + newLine;
 		}
 
 		try {
-			ob = mountPoints.get(req.resource).newInstance();
+			ob = servlets.get(req.resource).cl.newInstance();
 			if (headerFields.get("Content-Type") != null
 					&& headerFields.get("Content-Type").equals("application/x-www-form-urlencoded")) {
 				bd = new BodyDecoder(body);

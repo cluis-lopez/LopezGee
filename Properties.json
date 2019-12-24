@@ -1,9 +1,9 @@
 {
     "Port": 8080,
     "Root": ".",
-    "AppPath": "com.clopez.restserver",
+    "AppPath": "com.clopez.myapp",
     "Servlets": [
-        { "MountPoint": "/Tester", "ClassName": "Tester"},
-        { "MountPoint": "/other", "ClassName": "Other"}
+        { "MountPoint": "/Tester", "ClassName": "Tester", "Auth": false, "Account": false},
+        { "MountPoint": "/other", "ClassName": "Other", "Auth": false, "Account": false}
    ]
 }
