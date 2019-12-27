@@ -1,7 +1,9 @@
 {
     "Port": 8080,
     "Root": ".",
-    "AppPath": "com.clopez.myapp",
+    "AppPath": "com.lopezgee.myapp",
+    "AuthDriver": "com.lopezgee.drivers.JsonDriver",
+    "DataBasePropsFile": "JsonDriver.json",
     "Servlets": [
         { "MountPoint": "/Tester", "ClassName": "Tester", "Auth": false, "Account": false},
         { "MountPoint": "/other", "ClassName": "Other", "Auth": false, "Account": false}

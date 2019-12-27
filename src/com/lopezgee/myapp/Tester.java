@@ -1,9 +1,9 @@
-package com.clopez.myapp;
+package com.lopezgee.myapp;
 
 import java.util.Map;
 
-import com.clopez.restserver.MiniServlet;
 import com.google.gson.Gson;
+import com.lopezgee.restserver.MiniServlet;
 
 public class Tester extends MiniServlet {
 

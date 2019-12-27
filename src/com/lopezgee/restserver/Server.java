@@ -1,4 +1,4 @@
-package com.clopez.restserver;
+package com.lopezgee.restserver;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import com.google.gson.Gson;
+import com.lopezgee.auth.Auth;
 
 public class Server {
 
@@ -63,6 +64,9 @@ public class Server {
 			}
 		}
 			
+		//Arrancando el sistema de autentificación
+		
+		Auth au = new Auth(props.AuthDriver, props.DataBasePropsFile, log);
 
 		ServerSocket server = null;
 		

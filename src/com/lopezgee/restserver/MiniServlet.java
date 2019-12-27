@@ -1,4 +1,4 @@
-package com.clopez.restserver;
+package com.lopezgee.restserver;
 
 import java.util.Map;
 

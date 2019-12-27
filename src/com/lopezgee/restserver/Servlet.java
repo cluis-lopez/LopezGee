@@ -1,4 +1,4 @@
-package com.clopez.restserver;
+package com.lopezgee.restserver;
 
 public class Servlet {
 	String MountPoint;
