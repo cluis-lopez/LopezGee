@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import com.google.gson.Gson;
-import com.lopezgee.auth.Auth;
+import com.lopezgee.auth.AuthServer;
 
 public class Server {
 
@@ -66,7 +66,7 @@ public class Server {
 			
 		//Arrancando el sistema de autentificación
 		
-		Auth au = new Auth(props.AuthDriver, props.DataBasePropsFile, log);
+		AuthServer aus = new AuthServer(props.AuthDriver, props.DataBasePropsFile, log);
 
 		ServerSocket server = null;
 		
@@ -91,7 +91,7 @@ public class Server {
 				log.log(Level.WARNING, "Cannot launch thread to accept client: " + client.toString());
 				log.log(Level.WARNING, Arrays.toString(e.getStackTrace()));
 			}
-			final APIServer request = new APIServer(client, mountPoints, log);
+			final APIServer request = new APIServer(client, mountPoints, log, aus);
 			Thread thread = new Thread(request);
 			thread.start();
 		}

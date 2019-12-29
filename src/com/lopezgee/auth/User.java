@@ -1,7 +1,10 @@
 package com.lopezgee.auth;
 
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.Level;
 
 public class User {
 	public String Id;
@@ -19,8 +22,15 @@ public class User {
 		this.Id = Id;
 		this.Name = Name;
 		Mail = Id;
-		this.Password = Password;
-		Salt = "";
+		String[] pass = new String[2];
+		try {
+			pass = Encrypt.hashPasswd(Password);
+		} catch (NoSuchAlgorithmException e) {
+			System.err.println("Cannot encrypt password. This should never happen");
+			e.printStackTrace();
+		}
+		this.Password = pass[0];
+		Salt = pass[1];
 		Token = "";
 		UserSince = new Date();
 		Calendar cal = Calendar.getInstance();

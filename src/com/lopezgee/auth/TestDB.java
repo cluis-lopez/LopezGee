@@ -1,11 +1,10 @@
-package com.lopezgee.drivers;
+package com.lopezgee.auth;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-
-import com.lopezgee.auth.User;
 
 public class TestDB {
 
@@ -30,6 +29,7 @@ public class TestDB {
 		fd.setFormatter(formatter);
 		
 		DataBase db = new DataBase("com.lopezgee.drivers.JsonDriver", "JsonDriver.json", log);
+		//System.out.println(getInfo(db));
 		User user = new User("cluis.lopez@gmail.com", "Carlos", "1234");
 		db.createUser(user);
 		db.close();
@@ -41,6 +41,17 @@ public class TestDB {
 		db.createUser(user);
 		db.close();
 		
+		db = new DataBase("com.lopezgee.drivers.JsonDriver", "JsonDriver.json", log);
+		System.out.println(getInfo(db));
+		
+	}
+	
+	private static String getInfo(DataBase db) {
+		String ret = "";
+		HashMap<String, String> m = db.getInfo();
+		for (String key: m.keySet())
+			ret = ret + key + " : " + m.get(key) + "\n";
+		return ret;
 	}
 
 }

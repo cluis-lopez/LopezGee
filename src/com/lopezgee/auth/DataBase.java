@@ -1,15 +1,14 @@
-package com.lopezgee.drivers;
+package com.lopezgee.auth;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.lopezgee.auth.User;
-
-public class DataBase {
+public class DataBase implements DataBaseIF {
 	private Class<?> cl;
 	private Object ob;
 	private Logger log;
@@ -62,7 +61,7 @@ public class DataBase {
 		}
 	}
 	
-	void updateToken(User u, String newToken) {
+	public void updateToken(User u, String newToken) {
 		try {
 			Method me = cl.getMethod("updateToken", User.class, String.class);
 			me.invoke(u, newToken);
@@ -72,7 +71,7 @@ public class DataBase {
 		}	
 	}
 	
-	void close() {
+	public void close() {
 		try {
 			Method me = ob.getClass().getMethod("close");
 			me.invoke(ob, null);
@@ -80,5 +79,22 @@ public class DataBase {
 			log.log(Level.SEVERE, "Cannot update token in Database");
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 		}	
+	}
+	
+	public HashMap<String, String> getInfo() {
+		HashMap<String, String> m = null;
+		try {
+			Method me = ob.getClass().getMethod("getInfo");
+			m = (HashMap<String, String>) me.invoke(ob, null);
+		} catch (InvocationTargetException e) {
+			log.log(Level.SEVERE, "getInfo: Exception in invoked method");
+			log.log(Level.SEVERE, e.getMessage());
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+		} catch (NoSuchMethodException |SecurityException | IllegalAccessException | IllegalArgumentException e) {
+			log.log(Level.SEVERE, "getInfo: Invocation exception");
+			log.log(Level.SEVERE, e.getMessage());
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+		} 
+		return m;
 	}
 }

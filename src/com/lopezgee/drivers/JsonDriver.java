@@ -7,6 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -16,9 +18,10 @@ import java.util.logging.SimpleFormatter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.lopezgee.auth.DataBaseIF;
 import com.lopezgee.auth.User;
 
-public class JsonDriver {
+public class JsonDriver implements DataBaseIF {
 	JsonDriverVars jvars;
 	File datafile;
 	List<User> Users;
@@ -56,7 +59,8 @@ public class JsonDriver {
 		}
 
 		try {
-			fr = new FileReader(jvars.DataFile);
+			datafile = new File(jvars.DataFile);
+			fr = new FileReader(datafile);
 			Users = json.fromJson(fr, new TypeToken<ArrayList<User>>() {
 			}.getType());
 		} catch (FileNotFoundException e) {
@@ -71,7 +75,7 @@ public class JsonDriver {
 		Gson json = new GsonBuilder().setPrettyPrinting().create();
 
 		try {
-			FileWriter fw = new FileWriter(jvars.DataFile);
+			FileWriter fw = new FileWriter(datafile);
 			fw.write(json.toJson(Users));
 			fw.close();
 		} catch (IOException e) {
@@ -99,7 +103,24 @@ public class JsonDriver {
 			log.log(Level.INFO, " The user with id " + user.Id + "is already in the database");
 		}
 	}
+	
+	public HashMap<String, String> getInfo() {
+		HashMap<String, String> info = new HashMap<>();
+		info.put("Database File", jvars.DataFile);
+		info.put("Users in database: ", Integer.toString(Users.size()));
+		info.put("Database size on disk (bytes)", Long.toString(datafile.length()));
+		return info;
+	}
 
+	public void updateToken(User u, String newToken) {
+		if (! userExists(u.Id))
+			return;
+		u.Token = newToken;
+		long t = (new Date()).getTime();
+		t = jvars.TokenValidDays + 7 * 24 * 60 * 60 * 1000; // Tiempo de validez del token en milisegundos
+		u.TokenValidUpTo = new Date(t);
+	}
+	
 	private boolean userExists(String id) {
 		boolean ret = false;
 		for (User u : Users) {

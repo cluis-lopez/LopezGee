@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.lopezgee.auth.AuthServer;
+
 public class APIServer implements Runnable {
 
 	private static final String newLine = "\r\n";
@@ -24,13 +26,15 @@ public class APIServer implements Runnable {
 	private Map<String, String> headerFields;
 	private String body;
 	private Socket socket;
+	private AuthServer aus;
 
-	public APIServer(Socket s, Map<String, Servlet> map, Logger log) {
+	public APIServer(Socket s, Map<String, Servlet> map, Logger log, AuthServer aus) {
 		socket = s;
 		servlets = map;
 		headerFields = new HashMap<>();
 		body = null;
 		this.log = log;
+		this.aus = aus;
 	}
 
 	@Override
@@ -109,20 +113,29 @@ public class APIServer implements Runnable {
 
 		} else {
 			Object ob = null;
-			try {
-				ob = servlets.get(req.resource).cl.newInstance();
-				ret = (String[]) ob.getClass().getMethod("doGet", Map.class).invoke(ob, req.params);
-			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-				log.log(Level.SEVERE, "Cannot instantiate servlet");
-				log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+
+			// Chequeamos si se requiere autentificacion y en su caso, si es válida
+
+			boolean validToken = servlets.get(req.resource).Auth && req.params.get("User") != null
+					&& req.params.get("Token") != null
+					&& aus.isValidToken(req.params.get("User"), req.params.get("Token"));
+
+			if (!servlets.get(req.resource).Auth || validToken) {
+				try {
+					ob = servlets.get(req.resource).cl.newInstance();
+					ret = (String[]) ob.getClass().getMethod("doGet", Map.class).invoke(ob, req.params);
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+					log.log(Level.SEVERE, "Cannot instantiate servlet");
+					log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+				}
+				resp = "HTTP/1.0 200 OK" + newLine + "Content-Type: " + ret[0] + newLine + "Date: " + new Date()
+						+ newLine + "Content-length: " + ret[1].length() + newLine + newLine + ret[1];
+			} else {
+				resp = "HTTP/1.0 401 Unauthorized" + newLine + newLine;
 			}
-			resp = "HTTP/1.0 200 OK" + newLine + "Content-Type: " + ret[0] + newLine + "Date: " + new Date() + newLine
-					+ "Content-length: " + ret[1].length() + newLine + newLine + ret[1];
 		}
-
 		return resp;
-
 	}
 
 	private String processPost(HeaderDecoder req) {

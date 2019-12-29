@@ -1,3 +1,4 @@
 {
-    "DataFile": "Users.json"
+    "DataFile": "Users.json",
+    "TokenValidDays": 3
 }
