@@ -26,7 +26,8 @@ public class AuthServer {
 		return ret;
 	}
 	
-	public String createUser(String id, String password) {
+	public String createUser(String id, String name, String password) {
+		User u = new User(id, name, password);
 		return null;
 	}
 	
@@ -36,10 +37,16 @@ public class AuthServer {
 		if (u == null) {
 			ret[0] = "FAIL"; ret [1] = "Invalid User";
 		} else if (Encrypt.checkPasswd(passwd, u.Password, u.Salt)) { // Valid User+Password
+			// Check if there's already a valid token
+			ret[0] = "OK";
+			if (!u.Token.equals("") && u.TokenValidUpTo.after(new Date())) {
+				ret[1] = u.Token;
+			} else {
 			//Generate a new Token
 			UUID uuid = UUID.randomUUID();
 			db.updateToken(u, uuid.toString());
-			ret[0]="OK";ret[1]=uuid.toString();
+			ret[1]=uuid.toString();
+			}
 		} else {
 			ret[0]="FAIL"; ret[1]="Invalid Password";
 		}

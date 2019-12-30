@@ -29,7 +29,7 @@ public class TestDB {
 		fd.setFormatter(formatter);
 		
 		DataBase db = new DataBase("com.lopezgee.drivers.JsonDriver", "JsonDriver.json", log);
-		//System.out.println(getInfo(db));
+		System.out.println(getInfo(db));
 		User user = new User("cluis.lopez@gmail.com", "Carlos", "1234");
 		db.createUser(user);
 		db.close();

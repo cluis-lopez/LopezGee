@@ -97,4 +97,19 @@ public class DataBase implements DataBaseIF {
 		} 
 		return m;
 	}
+	
+	public void deleteUser(User u) {
+		try {
+			Method me = ob.getClass().getMethod("deleteUser");
+			me.invoke(ob, null);
+		} catch (InvocationTargetException e) {
+			log.log(Level.SEVERE, "getInfo: Exception in invoked method");
+			log.log(Level.SEVERE, e.getMessage());
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+		} catch (NoSuchMethodException |SecurityException | IllegalAccessException | IllegalArgumentException e) {
+			log.log(Level.SEVERE, "getInfo: Invocation exception");
+			log.log(Level.SEVERE, e.getMessage());
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+		} 
+	}
 }

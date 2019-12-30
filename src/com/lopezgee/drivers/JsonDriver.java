@@ -59,11 +59,12 @@ public class JsonDriver implements DataBaseIF {
 		}
 
 		try {
-			datafile = new File(jvars.DataFile);
+			datafile = new File(jvars.DataPath+"/"+jvars.DataFile);
 			fr = new FileReader(datafile);
 			Users = json.fromJson(fr, new TypeToken<ArrayList<User>>() {
 			}.getType());
-		} catch (FileNotFoundException e) {
+			fr.close();
+		} catch (IOException e) {
 			log.log(Level.INFO, "Cannot open or initialize Database from Json file");
 			log.log(Level.INFO, "Assuming there's no Database file yet");
 			log.log(Level.INFO, "Using an empty Database instead. Close properly this Database to store it");
@@ -100,13 +101,22 @@ public class JsonDriver implements DataBaseIF {
 			Users.add(user);
 			log.log(Level.INFO, "Added new user with id: " + user.Id);
 		} else {
-			log.log(Level.INFO, " The user with id " + user.Id + "is already in the database");
+			log.log(Level.INFO, "The user with id " + user.Id + " is already in the database");
+		}
+	}
+	
+	public void deleteUser(User u) {
+		if (userExists(u.Id)) {
+			Users.remove(u);
+			log.log(Level.INFO, " The user with id " + u.Id + " was removed from the database");
+		} else {
+			log.log(Level.INFO, " The user with id " + u.Id + "  does not exist");
 		}
 	}
 	
 	public HashMap<String, String> getInfo() {
 		HashMap<String, String> info = new HashMap<>();
-		info.put("Database File", jvars.DataFile);
+		info.put("Database File", jvars.DataPath+"/"+jvars.DataFile);
 		info.put("Users in database: ", Integer.toString(Users.size()));
 		info.put("Database size on disk (bytes)", Long.toString(datafile.length()));
 		return info;

@@ -1,4 +1,7 @@
 {
+    "DataPath": "/Users/clopez/Desktop/Desarrollo",
     "DataFile": "Users.json",
-    "TokenValidDays": 3
+    "TokenValidDays": 3,
+    "Admin": "root",
+    "Password": "1234"
 }

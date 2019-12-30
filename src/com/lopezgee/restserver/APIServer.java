@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.Arrays;
@@ -122,6 +123,7 @@ public class APIServer implements Runnable {
 
 			if (!servlets.get(req.resource).Auth || validToken) {
 				try {
+					Constructor<?> cons = servlets.get(req.resource).cl.getConstructor(Logger.class, ExtVars.class);
 					ob = servlets.get(req.resource).cl.newInstance();
 					ret = (String[]) ob.getClass().getMethod("doGet", Map.class).invoke(ob, req.params);
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
@@ -149,7 +151,8 @@ public class APIServer implements Runnable {
 		}
 
 		try {
-			ob = servlets.get(req.resource).cl.newInstance();
+			Constructor<?> cons = servlets.get(req.resource).cl.getConstructor(Logger.class, ExtVars.class);
+			ob = servlets.get(req.resource).cl.newInstance(log, extvars);
 			if (headerFields.get("Content-Type") != null
 					&& headerFields.get("Content-Type").equals("application/x-www-form-urlencoded")) {
 				bd = new BodyDecoder(body);
