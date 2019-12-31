@@ -2,6 +2,6 @@
     "DataPath": "/Users/clopez/Desktop/Desarrollo",
     "DataFile": "Users.json",
     "TokenValidDays": 3,
-    "Admin": "root",
+    "Admin": "admin",
     "Password": "1234"
 }

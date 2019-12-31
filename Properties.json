@@ -6,7 +6,7 @@
     "DataBasePropsFile": "JsonDriver.json",
     "Servlets": [
     	{ "MountPoint": "/dbservlet", "ClassName": "DBServlet", "Auth": false, "Account": false},
-        { "MountPoint": "/Tester", "ClassName": "Tester", "Auth": true, "Account": false},
+        { "MountPoint": "/Tester", "ClassName": "Tester", "Auth": false, "Account": false},
         { "MountPoint": "/other", "ClassName": "Other", "Auth": false, "Account": false}
    ]
 }

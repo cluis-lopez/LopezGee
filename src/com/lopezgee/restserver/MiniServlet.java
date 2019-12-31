@@ -5,12 +5,10 @@ import java.util.logging.Logger;
 
 public class MiniServlet {
 	
-	Logger log;
-	ExtVars extvars;
+	protected Logger log;
 	
-	public MiniServlet (Logger log, ExtVars extvars) {
+	public MiniServlet (Logger log) {
 		this.log = log;
-		this.extvars = extvars;
 	}
 	
 	public String[] doGet(Map<String, String> map) {

@@ -106,8 +106,7 @@ public class Server {
 		} catch (ClassNotFoundException e) {
 			System.err.println("No se puede mapear el servlet: " + m);
 			log.log(Level.WARNING, "Cannot map servlet: " + m);
-			e.printStackTrace();
-			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+			log.log(Level.WARNING, Arrays.toString(e.getStackTrace()));
 		}
 	}
 

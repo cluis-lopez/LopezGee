@@ -4,13 +4,12 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
-import com.lopezgee.restserver.ExtVars;
 import com.lopezgee.restserver.MiniServlet;
 
 public class Tester extends MiniServlet {
 
-	public Tester (Logger log, ExtVars extvars) {
-		super (log, extvars);
+	public Tester (Logger log) {
+		super (log);
 	}
 	@Override
 	public String[] doGet(Map<String,String> pars) {

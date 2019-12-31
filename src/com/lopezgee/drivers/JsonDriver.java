@@ -116,9 +116,9 @@ public class JsonDriver implements DataBaseIF {
 	
 	public HashMap<String, String> getInfo() {
 		HashMap<String, String> info = new HashMap<>();
-		info.put("Database File", jvars.DataPath+"/"+jvars.DataFile);
-		info.put("Users in database: ", Integer.toString(Users.size()));
-		info.put("Database size on disk (bytes)", Long.toString(datafile.length()));
+		info.put("DatabaseFile", jvars.DataPath+"/"+jvars.DataFile);
+		info.put("UsersInDatabase", Integer.toString(Users.size()));
+		info.put("DatabaseSizeOnDisk", Long.toString(datafile.length()));
 		return info;
 	}
 

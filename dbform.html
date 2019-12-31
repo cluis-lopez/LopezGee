@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+
+<body>
+	<form action="dbservlet" method="get" class="form-example">
+		<div class="form-example">
+			<label for="driver">DB Driver: </label> <input type="text"
+				name="DatabaseDriver" id="DatabaseDriver" value="com.lopezgee.drivers.JsonDriver" required>
+		</div>
+		<div class="form-example">
+			<label for="ParamatersFile">DB Properties file: </label> <input
+				type="text" name="ParamatersFile" id="ParamatersFile" value="JsonDriver.json" required>
+		</div>
+				<div class="form-example">
+			<label for="type">Command: </label> <input
+				type="text" name="type" id="type" value="info" required>
+		</div>
+		<div class="form-example">
+			<input type="submit" value="Send">
+		</div>
+	</form>
+
+	<hr>
+
+	<form action="Tester" method="post" class="form-example">
+		<div class="form-example">
+			<label for="name">Enter your name: </label> <input type="text"
+				name="name" id="name" required>
+		</div>
+		<div class="form-example">
+			<label for="password">Enter your password: </label> <input
+				type="password" name="password" id="password" required>
+		</div>
+		<div class="form-example">
+			<input type="submit" value="Send">
+		</div>
+	</form>
+</body>
+
+</html>

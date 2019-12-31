@@ -103,7 +103,7 @@ public class APIServer implements Runnable {
 		String resp;
 
 		if (!servlets.containsKey(req.resource)) { // No declared miniservlet, expect a file
-			doFile df = new doFile();
+			doFile df = new doFile(log);
 			ret = df.doGet(req.resource.substring(1));
 			if (ret[0].equals("")) { // No file found
 				resp = "HTTP/1.0 404 " + ret[1] + newLine + newLine;
@@ -123,12 +123,13 @@ public class APIServer implements Runnable {
 
 			if (!servlets.get(req.resource).Auth || validToken) {
 				try {
-					Constructor<?> cons = servlets.get(req.resource).cl.getConstructor(Logger.class, ExtVars.class);
-					ob = servlets.get(req.resource).cl.newInstance();
+					Constructor<?> cons = servlets.get(req.resource).cl.getConstructor(Logger.class);
+					ob = cons.newInstance(log);
 					ret = (String[]) ob.getClass().getMethod("doGet", Map.class).invoke(ob, req.params);
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 					log.log(Level.SEVERE, "Cannot instantiate servlet");
+					log.log(Level.SEVERE, e.toString());
 					log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 				}
 				resp = "HTTP/1.0 200 OK" + newLine + "Content-Type: " + ret[0] + newLine + "Date: " + new Date()
@@ -151,8 +152,8 @@ public class APIServer implements Runnable {
 		}
 
 		try {
-			Constructor<?> cons = servlets.get(req.resource).cl.getConstructor(Logger.class, ExtVars.class);
-			ob = servlets.get(req.resource).cl.newInstance(log, extvars);
+			Constructor<?> cons = servlets.get(req.resource).cl.getConstructor(Logger.class);
+			ob = cons.newInstance(log);
 			if (headerFields.get("Content-Type") != null
 					&& headerFields.get("Content-Type").equals("application/x-www-form-urlencoded")) {
 				bd = new BodyDecoder(body);
