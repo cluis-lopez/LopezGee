@@ -4,9 +4,9 @@ import java.util.HashMap;
 
 public interface DataBaseIF {
 	public User getUser(String id);
-	public void createUser(User u);
-	public void deleteUser(User u);
-	public void updateToken(User u, String newToken);
-	public void close();
+	public String createUser(User u);
+	public String deleteUser(User u);
+	public String updateToken(User u, String newToken);
+	public String close();
 	public HashMap<String, String> getInfo();
 }

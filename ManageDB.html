@@ -3,16 +3,113 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Manage Database</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="ManageDB.js"></script>
 <style>
-    body {background-color: powderblue;}
-    .header {font-family: Arial, Helvetica, sans-serif; font-size:x-large; margin-left: 10px; margin-top: 20px; padding: 25px 50px;}
-    #infobox {font-size: medium; border: 1px; border-color: grey; border-style: solid;}
+body {
+	background-color: powderblue;
+}
+
+.header {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: x-large;
+	margin-left: 10px;
+	margin-top: 20px;
+	padding: 25px 50px;
+}
+
+#infobox {
+	font-size: medium;
+	border: 1px;
+	border-color: grey;
+	border-style: solid;
+}
+
+th, td {
+	padding: 5px;
+}
+
+.firstcol {
+	width: 50%;
+}
+
+#modal {
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 1; /* Sit on top */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	overflow: auto; /* Enable scroll if needed */
+	background-color: rgb(0, 0, 0); /* Fallback color */
+	background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+#modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 10px;
+  border: 1px solid #888;
+  width: 50%; /* Could be more or less, depending on screen size */
+  font-family: Arial;
+  font-size: medium;
+}
 </style>
 </head>
 <body>
-    <div class="header">Auth Database Manager</div>
-    <div class="header" id="infobox">Infobox</div>
+	<div class="header">Auth Database Manager</div>
+	<div class="header" id="infobox">Infobox</div>
+	<div class="header" id="infobox">
+		<h3>Add user</h3>
+		<table>
+			<tr>
+				<td><label for="name">Enter new user Id: </label></td>
+				<td><input type="text" name="id" id="id" required></td>
+			</tr>
+			<tr>
+				<td><label for="name">Enter new user name: </label></td>
+				<td><input type="text" name="name" id="name" required></td>
+			</tr>
+			<tr>
+				<td><label for="password">Enter new user password: </label></td>
+				<td><input type="text" name="password" id="password" required></td>
+			</tr>
+			<tr>
+				<td><input type="submit" value="Send" id="newuser"></td>
+			</tr>
+		</table>
+	</div>
+	<div class="header" id="infobox">
+		<h3>Remove user</h3>
+		<table>
+			<tr>
+				<td><label for="name">Enter new user Id: </label></td>
+				<td><input type="text" name="id" id="removeid" required></td>
+			</tr>
+			<tr>
+				<td><input type="submit" value="Send" id="newuser"></td>
+			</tr>
+		</table>
+	</div>
+	<div id="modal">
+		<div id="modal-content">
+			<p>Login</p>
+			<table>
+			<tr>
+				<td><label for="adminuser">Admin user: </label></td>
+				<td><input type="text" name="adminuser" id="adminuser" required></td>
+			</tr>
+			<tr>
+				<td><label for="adminpassword">Admin password: </label></td>
+				<td><input type="password" name="adminpassword" id="adminpassword" required></td>
+			</tr>
+			<tr>
+				<td colspan="2"><input type="submit" value="Send" id="login"></td>
+			</tr>
+		</table>
+		</div>
+	</div>
 </body>
 </html>

@@ -51,34 +51,43 @@ public class DataBase implements DataBaseIF {
 		
 	};
 	
-	public void createUser(User u) {
+	public String createUser(User u) {
+		String ret = "";
 		try {
 			Method me = ob.getClass().getMethod("createUser", User.class);
-			me.invoke(ob, u);
+			ret = (String) me.invoke(ob, u);
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			log.log(Level.SEVERE, "Cannot create user in Database");
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+			ret ="Something went wrong";
 		}
+		return ret;
 	}
 	
-	public void updateToken(User u, String newToken) {
+	public String updateToken(User u, String newToken) {
+		String ret = "";
 		try {
 			Method me = cl.getMethod("updateToken", User.class, String.class);
-			me.invoke(u, newToken);
+			ret = (String) me.invoke(u, newToken);
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			log.log(Level.SEVERE, "Cannot update token in Database");
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-		}	
+			ret ="Something went wrong";
+		}
+		return ret;
 	}
 	
-	public void close() {
+	public String close() {
+		String ret = "";
 		try {
 			Method me = ob.getClass().getMethod("close");
-			me.invoke(ob, null);
+			ret = (String) me.invoke(ob, null);
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			log.log(Level.SEVERE, "Cannot update token in Database");
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-		}	
+			ret ="Something went wrong";
+		}
+		return ret;
 	}
 	
 	public HashMap<String, String> getInfo() {
@@ -98,18 +107,22 @@ public class DataBase implements DataBaseIF {
 		return m;
 	}
 	
-	public void deleteUser(User u) {
+	public String deleteUser(User u) {
+		String ret = "";
 		try {
 			Method me = ob.getClass().getMethod("deleteUser");
-			me.invoke(ob, null);
+			ret = (String) me.invoke(ob, null);
 		} catch (InvocationTargetException e) {
 			log.log(Level.SEVERE, "getInfo: Exception in invoked method");
 			log.log(Level.SEVERE, e.getMessage());
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+			ret ="Something went wrong";
 		} catch (NoSuchMethodException |SecurityException | IllegalAccessException | IllegalArgumentException e) {
 			log.log(Level.SEVERE, "getInfo: Invocation exception");
 			log.log(Level.SEVERE, e.getMessage());
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-		} 
+			ret ="Something went wrong";
+		}
+		return ret;
 	}
 }

@@ -55,11 +55,11 @@ public class JsonDriver implements DataBaseIF {
 		} catch (IOException e) {
 			log.log(Level.SEVERE, "Cannot open properties file. Exiting");
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-			System.err.println("Json Driver: No se puede abrir e fichero de propiedades");
+			System.err.println("Json Driver: No se puede abrir el fichero de propiedades");
 		}
 
 		try {
-			datafile = new File(jvars.DataPath+"/"+jvars.DataFile);
+			datafile = new File(jvars.DataPath + "/" + jvars.DataFile);
 			fr = new FileReader(datafile);
 			Users = json.fromJson(fr, new TypeToken<ArrayList<User>>() {
 			}.getType());
@@ -72,17 +72,20 @@ public class JsonDriver implements DataBaseIF {
 		}
 	}
 
-	public void close() {
+	public String close() {
 		Gson json = new GsonBuilder().setPrettyPrinting().create();
-
+		String ret = "";
 		try {
 			FileWriter fw = new FileWriter(datafile);
 			fw.write(json.toJson(Users));
 			fw.close();
+			ret = "OK";
 		} catch (IOException e) {
 			log.log(Level.SEVERE, "Cannot close and store Database into Json file");
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+			ret = "Cannot update & close DataBase";
 		}
+		return ret;
 	}
 
 	public User getUser(String id) {
@@ -96,41 +99,54 @@ public class JsonDriver implements DataBaseIF {
 		return user;
 	}
 
-	public void createUser(User user) {
+	public String createUser(User user) {
+		String ret = "";
 		if (!userExists(user.Id)) {
 			Users.add(user);
 			log.log(Level.INFO, "Added new user with id: " + user.Id);
+			ret = "OK";
 		} else {
 			log.log(Level.INFO, "The user with id " + user.Id + " is already in the database");
+			ret = "User already exists";
 		}
+		return ret;
 	}
-	
-	public void deleteUser(User u) {
+
+	public String deleteUser(User u) {
+		String ret = "";
 		if (userExists(u.Id)) {
 			Users.remove(u);
 			log.log(Level.INFO, " The user with id " + u.Id + " was removed from the database");
+			ret = "OK";
 		} else {
 			log.log(Level.INFO, " The user with id " + u.Id + "  does not exist");
+			ret = "User does not exist";
 		}
+		return ret;
 	}
-	
+
 	public HashMap<String, String> getInfo() {
 		HashMap<String, String> info = new HashMap<>();
-		info.put("DatabaseFile", jvars.DataPath+"/"+jvars.DataFile);
+		info.put("DatabaseFile", jvars.DataPath + "/" + jvars.DataFile);
 		info.put("UsersInDatabase", Integer.toString(Users.size()));
 		info.put("DatabaseSizeOnDisk", Long.toString(datafile.length()));
 		return info;
 	}
 
-	public void updateToken(User u, String newToken) {
-		if (! userExists(u.Id))
-			return;
-		u.Token = newToken;
-		long t = (new Date()).getTime();
-		t = jvars.TokenValidDays + 7 * 24 * 60 * 60 * 1000; // Tiempo de validez del token en milisegundos
-		u.TokenValidUpTo = new Date(t);
+	public String updateToken(User u, String newToken) {
+		String ret = "";
+		if (userExists(u.Id)) { //Warning check for token already valid
+			u.Token = newToken;
+			long t = (new Date()).getTime();
+			t = jvars.TokenValidDays + 7 * 24 * 60 * 60 * 1000; // Tiempo de validez del token en milisegundos
+			u.TokenValidUpTo = new Date(t);
+			ret = "OK";
+		} else {
+			ret = "User does not exist";
+		}
+		return ret;
 	}
-	
+
 	private boolean userExists(String id) {
 		boolean ret = false;
 		for (User u : Users) {
