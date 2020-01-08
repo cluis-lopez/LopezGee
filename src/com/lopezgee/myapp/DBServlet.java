@@ -54,8 +54,9 @@ public class DBServlet extends MiniServlet {
 			if (pars.get("type").equals("newUser"))
 				ret = doNewUser(db, pars.get("id"), pars.get("name"), pars.get("password"));
 
-			if (pars.get("type").equals("deleteUser"))
-				ret = doDeleteUser(db, pars.get("id"));
+			if (pars.get("type").equals("removeUser"))
+				ret = doRemoveUser(db, pars.get("removeid"));
+			
 		} else if (jvars != null && pars.get("type").equals("login")) {
 			ret = doLogin(jvars, pars.get("adminuser"), pars.get("adminpassword"));
 		} else {
@@ -90,15 +91,20 @@ public class DBServlet extends MiniServlet {
 		ret[0] = "text/plain";
 		User u = new User(id, name, password);
 		ret[1] = db.createUser(u);
-		db.close();
+		String temp = db.update();
+		if(!temp.equals("OK"))
+			ret[1] = "Cannot create user "+id;
 		return ret;
 	}
 
-	private String[] doDeleteUser(DataBase db, String id) {
+	private String[] doRemoveUser(DataBase db, String id) {
 		String[] ret = new String[2];
 		ret[0] = "text/plain";
 		User u = db.getUser(id);
 		ret[1] = db.deleteUser(u);
+		String temp = db.update();
+		if(!temp.equals("OK"))
+			ret[1] = "Cannot remove user "+id;
 		return ret;
 	}
 

@@ -72,6 +72,10 @@ public class JsonDriver implements DataBaseIF {
 		}
 	}
 
+	public String update() {
+		return close();
+	}
+	
 	public String close() {
 		Gson json = new GsonBuilder().setPrettyPrinting().create();
 		String ret = "";
@@ -81,11 +85,25 @@ public class JsonDriver implements DataBaseIF {
 			fw.close();
 			ret = "OK";
 		} catch (IOException e) {
-			log.log(Level.SEVERE, "Cannot close and store Database into Json file");
+			log.log(Level.SEVERE, "Cannot update close and store Database into Json file");
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 			ret = "Cannot update & close DataBase";
 		}
 		return ret;
+	}
+	
+	public String deleteDatabase() {
+		String ret = "";
+		if (datafile.delete()) {
+			ret = "OK";
+			log.log(Level.WARNING, "Deleted the database file "+datafile.toPath().toString());
+		} else {
+			ret = "Failed to delete database file";
+			log.log(Level.WARNING, "Cannot delete the database file "+datafile.toPath().toString());
+		}
+		
+		return ret;
+		
 	}
 
 	public User getUser(String id) {
@@ -114,12 +132,13 @@ public class JsonDriver implements DataBaseIF {
 
 	public String deleteUser(User u) {
 		String ret = "";
-		if (userExists(u.Id)) {
+		if (u != null && userExists(u.Id)) {
+			String temp = u.Id;
 			Users.remove(u);
-			log.log(Level.INFO, " The user with id " + u.Id + " was removed from the database");
+			log.log(Level.INFO, " The user with id " + temp + " was removed from the database");
 			ret = "OK";
 		} else {
-			log.log(Level.INFO, " The user with id " + u.Id + "  does not exist");
+			log.log(Level.INFO, " The user does not exist");
 			ret = "User does not exist";
 		}
 		return ret;

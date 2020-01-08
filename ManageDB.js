@@ -12,8 +12,6 @@ $(document).ready(function() {
 		loginuser($("#adminuser").val(), $("#adminpassword").val());
 	});
 	
-	getDBInfo();
-	
 	function loginuser(user, password){
 		$.get("/dbservlet", {
 			"adminuser" : user,
@@ -29,7 +27,7 @@ $(document).ready(function() {
 					$("#modal").css("display", "none");
 					getDBInfo();
 				} else {
-					window.alert(data);
+					window.alert("1-"+data);
 				}
 		});
 	}
@@ -39,6 +37,11 @@ $(document).ready(function() {
 		$("#id").val("");
 		$("#name").val("");
 		$("#password").val("");
+	});
+	
+	$("#removeuser").click(function() {
+		removeUser();
+		$("#removeid").val("");
 	});
 	
 	function infoRefresh(obj) {
@@ -61,10 +64,7 @@ $(document).ready(function() {
 			"type" : "info"}, 
 			function(data, status) {
 				console.log(data);
-				if (data == "OK")
 					infoRefresh(data);
-				else
-					window.alert(data);
 		});
 	};
 	
@@ -83,7 +83,27 @@ $(document).ready(function() {
 				if (data == "OK")
 					getDBInfo();
 				else
-					window.alert(data);
+					window.alert("3-"+data);
+		});
+	}
+	
+	function removeUser(){
+		temp = $("#removeid").val();
+		$.get("/dbservlet", {
+			"adminuser" : adminuser,
+			"adminpassword" : adminpassword,
+			"DatabaseDriver" : "com.lopezgee.drivers.JsonDriver",
+			"ParamatersFile" : "JsonDriver.json",
+			"removeid" : $("#removeid").val(),
+			"type" : "removeUser"}, 
+			function(data, status) {
+				console.log(data);
+				if (data == "OK"){
+					window.alert("Removed user with id: "+temp)
+					getDBInfo();
+				}
+				else
+					window.alert("4-"+data);
 		});
 	}
 });

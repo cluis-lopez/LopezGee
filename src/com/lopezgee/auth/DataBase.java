@@ -37,11 +37,30 @@ public class DataBase implements DataBaseIF {
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 		}
 	}
+	
+	public String deleteDatabase() {
+		String ret = "";
+		try {
+			Method me = ob.getClass().getMethod("deleteDatabase");
+			ret = (String) me.invoke(ob, null);
+		} catch (InvocationTargetException e) {
+			log.log(Level.SEVERE, "getInfo: Exception in invoked method");
+			log.log(Level.SEVERE, e.getMessage());
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+			ret ="Something went wrong";
+		} catch (NoSuchMethodException |SecurityException | IllegalAccessException | IllegalArgumentException e) {
+			log.log(Level.SEVERE, "getInfo: Invocation exception");
+			log.log(Level.SEVERE, e.getMessage());
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+			ret ="Something went wrong";
+		}
+		return ret;
+	}
 	public User getUser(String id) {
 		User user = null;
 		try {
-			Method me = cl.getMethod("getUser", String.class);
-			user = (User) me.invoke(id);
+			Method me = ob.getClass().getMethod("getUser", String.class);
+			user = (User) me.invoke(ob, id);
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			log.log(Level.SEVERE, "Cannot read user from Database");
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
@@ -67,10 +86,23 @@ public class DataBase implements DataBaseIF {
 	public String updateToken(User u, String newToken) {
 		String ret = "";
 		try {
-			Method me = cl.getMethod("updateToken", User.class, String.class);
-			ret = (String) me.invoke(u, newToken);
+			Method me = ob.getClass().getMethod("updateToken", User.class, String.class);
+			ret = (String) me.invoke(ob, u, newToken);
 		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			log.log(Level.SEVERE, "Cannot update token in Database");
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+			ret ="Something went wrong";
+		}
+		return ret;
+	}
+	
+	public String update() {
+		String ret = "";
+		try {
+			Method me = ob.getClass().getMethod("update");
+			ret = (String) me.invoke(ob, null);
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			log.log(Level.SEVERE, "Cannot update Database");
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 			ret ="Something went wrong";
 		}
@@ -110,15 +142,15 @@ public class DataBase implements DataBaseIF {
 	public String deleteUser(User u) {
 		String ret = "";
 		try {
-			Method me = ob.getClass().getMethod("deleteUser");
-			ret = (String) me.invoke(ob, null);
+			Method me = ob.getClass().getMethod("deleteUser", User.class);
+			ret = (String) me.invoke(ob, u);
 		} catch (InvocationTargetException e) {
-			log.log(Level.SEVERE, "getInfo: Exception in invoked method");
+			log.log(Level.SEVERE, "deleteUser: Exception in invoked method");
 			log.log(Level.SEVERE, e.getMessage());
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 			ret ="Something went wrong";
 		} catch (NoSuchMethodException |SecurityException | IllegalAccessException | IllegalArgumentException e) {
-			log.log(Level.SEVERE, "getInfo: Invocation exception");
+			log.log(Level.SEVERE, "deleteUser: Invocation exception");
 			log.log(Level.SEVERE, e.getMessage());
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 			ret ="Something went wrong";
