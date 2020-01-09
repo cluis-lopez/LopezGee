@@ -2,6 +2,7 @@ package com.lopezgee.restserver;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -10,6 +11,8 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,15 +30,19 @@ public class APIServer implements Runnable {
 	private Map<String, String> headerFields;
 	private String body;
 	private Socket socket;
-	private AuthServer aus;
+	private AuthServer auth;
+	private FileWriter accntfile;
+	private Map<String, Long> timers;
 
-	public APIServer(Socket s, Map<String, Servlet> map, Logger log, AuthServer aus) {
+	public APIServer(Socket s, Map<String, Servlet> map, Logger log, AuthServer auth, FileWriter accntfile) {
 		socket = s;
 		servlets = map;
 		headerFields = new HashMap<>();
 		body = null;
 		this.log = log;
-		this.aus = aus;
+		this.auth = auth;
+		this.accntfile = accntfile;
+		timers = new HashMap<>();
 	}
 
 	@Override
@@ -119,13 +126,17 @@ public class APIServer implements Runnable {
 
 			boolean validToken = servlets.get(req.resource).Auth && req.params.get("User") != null
 					&& req.params.get("Token") != null
-					&& aus.isValidToken(req.params.get("User"), req.params.get("Token"));
+					&& auth.isValidToken(req.params.get("User"), req.params.get("Token"));
 
 			if (!servlets.get(req.resource).Auth || validToken) {
 				try {
 					Constructor<?> cons = servlets.get(req.resource).cl.getConstructor(Logger.class);
 					ob = cons.newInstance(log);
 					ret = (String[]) ob.getClass().getMethod("doGet", Map.class).invoke(ob, req.params);
+					timers = (Map<String, Long>) ob.getClass().getMethod("destroy").invoke(ob, null);
+					if (servlets.get(req.resource).Account)
+						writeAccntLine(servlets.get(req.resource).MountPoint, req.params.get("User"));
+					
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 					log.log(Level.SEVERE, "Cannot instantiate servlet");
@@ -170,5 +181,22 @@ public class APIServer implements Runnable {
 		}
 
 		return resp;
+	}
+	
+	private void writeAccntLine(String servletName, String userName) {
+		if (userName == null || userName.equals(""))
+			userName = "Anonymous";
+		SimpleDateFormat dtformat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+		String line = MessageFormat.format("{0} {1} {2}", dtformat.format(new Date()), servletName, userName);
+		for (String s : timers.keySet())
+			line += " " + s + " " + timers.get(s);
+		line += "\n";
+		try {
+			accntfile.write(line);
+			accntfile.flush();
+		} catch (IOException e) {
+			log.log(Level.SEVERE, "Cannot write account entry");
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+		}
 	}
 }

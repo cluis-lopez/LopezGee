@@ -15,6 +15,8 @@ public class Tester extends MiniServlet {
 	public String[] doGet(Map<String,String> pars) {
 		String[] ret = new String[2];
 		ret[0] = "application/json";
+		destroy();
+		pars.put("timer", Long.toString((System.nanoTime()-timers.get("main"))));
 		Gson json = new Gson();
 		ret[1] = json.toJson(pars);
 		return ret;

@@ -10,6 +10,7 @@ public class ExtVars {
 	public String AppPath;
 	public String AuthDriver;
 	public String DataBasePropsFile;
+	public String AccountingFile;
 	public List<Servlet> Servlets;
 	
 	public ExtVars() {
@@ -19,6 +20,7 @@ public class ExtVars {
 		AppPath = "";
 		AuthDriver = "";
 		DataBasePropsFile = "";
+		AccountingFile = "";
 	}
 	
 	@Override

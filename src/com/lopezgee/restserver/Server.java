@@ -1,7 +1,9 @@
 package com.lopezgee.restserver;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -56,7 +58,7 @@ public class Server {
 		
 		// Mapeando puntos de montaje //
 		mountPoints = new HashMap<>();
-		if (props.Servlets.size() ==0) {
+		if (props.Servlets.isEmpty()) {
 			log.log(Level.INFO, "No mounted servlets");
 		} else {
 			for (Servlet s: props.Servlets) {
@@ -66,8 +68,18 @@ public class Server {
 			
 		//Arrancando el sistema de autentificación
 		
-		AuthServer aus = new AuthServer(props.AuthDriver, props.DataBasePropsFile, log);
+		AuthServer authserver = new AuthServer(props.AuthDriver, props.DataBasePropsFile, log);
 
+		// Inicializacion del subsistemna de accouting
+		
+		FileWriter accnt = null;
+		try {
+			accnt = new FileWriter (props.AccountingFile, true);
+		} catch (IOException e) {
+			log.log(Level.SEVERE, "Cannot open the accounting file " + props.AccountingFile);
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+		}
+		
 		ServerSocket server = null;
 		
 		try {
@@ -91,7 +103,7 @@ public class Server {
 				log.log(Level.WARNING, "Cannot launch thread to accept client: " + client.toString());
 				log.log(Level.WARNING, Arrays.toString(e.getStackTrace()));
 			}
-			final APIServer request = new APIServer(client, mountPoints, log, aus);
+			final APIServer request = new APIServer(client, mountPoints, log, authserver, accnt);
 			Thread thread = new Thread(request);
 			thread.start();
 		}
