@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
+import com.lopezgee.auth.AuthServer;
 import com.lopezgee.auth.DataBase;
 import com.lopezgee.auth.User;
 import com.lopezgee.drivers.JsonDriverVars;
@@ -15,8 +16,8 @@ import com.lopezgee.restserver.MiniServlet;
 
 public class DBServlet extends MiniServlet {
 
-	public DBServlet(Logger log) {
-		super(log);
+	public DBServlet(Logger log, AuthServer auth) {
+		super(log, auth);
 	}
 
 	@Override

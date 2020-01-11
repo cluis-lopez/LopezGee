@@ -4,15 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.lopezgee.auth.AuthServer;
+
 public class MiniServlet {
 	
 	protected Logger log;
-	protected Map<String, Long> timers;
+	protected Map<String, Long> servletTimers;
 	protected long tinit;
+	protected AuthServer authServer;
 	
-	public MiniServlet (Logger log) {
+	public MiniServlet (Logger log, AuthServer auths) {
 		this.log = log;
-		timers = new HashMap<>();
+		this.authServer = auths;
+		servletTimers = new HashMap<>();
 		tinit = System.nanoTime();
 	}
 	
@@ -33,7 +37,7 @@ public class MiniServlet {
 	};
 	
 	public final Map<String, Long> destroy() {
-		timers.put("main", System.nanoTime()-tinit);
-		return timers;
+		servletTimers.put("main", System.nanoTime()-tinit);
+		return servletTimers;
 	}
 }

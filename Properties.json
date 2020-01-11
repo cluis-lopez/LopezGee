@@ -7,7 +7,7 @@
     "AccountingFile": "LopezgeeAccnt.log",
     "Servlets": [
     	{ "MountPoint": "/dbservlet", "ClassName": "DBServlet", "Auth": false, "Account": false},
-        { "MountPoint": "/Tester", "ClassName": "Tester", "Auth": false, "Account": true},
-        { "MountPoint": "/other", "ClassName": "Other", "Auth": false, "Account": false}
+        {"MountPoint": "/Login", "ClassName": "Login", "Auth": false, "Account": false},
+        {"MountPoint": "/Tester", "ClassName": "Tester", "Auth": true, "Account": false}
    ]
 }

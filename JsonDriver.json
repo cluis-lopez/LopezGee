@@ -1,5 +1,5 @@
 {
-    "DataPath": "/Users/clopez/Desktop/Desarrollo",
+    "DataPath": ".",
     "DataFile": "Users.json",
     "TokenValidDays": 3,
     "Admin": "admin",
