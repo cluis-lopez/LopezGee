@@ -26,19 +26,17 @@ public class AuthServer {
 		return ret;
 	}
 	
-	public String createUser(String id, String name, String password) {
-		User u = new User(id, name, password);
-		return null;
-	}
-	
 	public String[] loginUser(String id, String passwd) {
 		String [] ret = new String[2];
 		User u = db.getUser(id);
 		if (u == null) {
 			ret[0] = "FAIL"; ret [1] = "Invalid User";
 		} else if (Encrypt.checkPasswd(passwd, u.Password, u.Salt)) { // Valid User+Password
-			// Check if there's already a valid token
 			ret[0] = "OK";
+			// Check if there's already a valid token
+			System.err.println("Token valid up to: "+ u.TokenValidUpTo);
+			System.err.println("Today is: "+ new Date());
+			System.err.println("Token valid: "+ u.TokenValidUpTo.after(new Date()));
 			if (!u.Token.equals("") && u.TokenValidUpTo.after(new Date())) {
 				ret[1] = u.Token;
 			} else {

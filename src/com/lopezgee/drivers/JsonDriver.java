@@ -157,7 +157,7 @@ public class JsonDriver implements DataBaseIF {
 		if (userExists(u.Id)) { //Warning check for token already valid
 			u.Token = newToken;
 			long t = (new Date()).getTime();
-			t = jvars.TokenValidDays + 7 * 24 * 60 * 60 * 1000; // Tiempo de validez del token en milisegundos
+			t += jvars.TokenValidDays + 7 * 24 * 60 * 60 * 1000; // Tiempo de validez del token en milisegundos
 			u.TokenValidUpTo = new Date(t);
 			ret = "OK";
 		} else {

@@ -13,7 +13,7 @@ public class MiniServlet {
 	protected long tinit;
 	protected AuthServer authServer;
 	
-	public MiniServlet (Logger log, AuthServer auths) {
+	public void initialize (Logger log, AuthServer auths) {
 		this.log = log;
 		this.authServer = auths;
 		servletTimers = new HashMap<>();

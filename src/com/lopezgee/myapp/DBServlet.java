@@ -16,10 +16,6 @@ import com.lopezgee.restserver.MiniServlet;
 
 public class DBServlet extends MiniServlet {
 
-	public DBServlet(Logger log, AuthServer auth) {
-		super(log, auth);
-	}
-
 	@Override
 	public String[] doGet(Map<String, String> pars) {
 

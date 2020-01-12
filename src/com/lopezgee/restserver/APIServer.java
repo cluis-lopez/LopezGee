@@ -10,6 +10,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.Socket;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -130,8 +131,9 @@ public class APIServer implements Runnable {
 
 			if (!servlets.get(req.resource).Auth || validToken) {
 				try {
-					Constructor<?> cons = servlets.get(req.resource).cl.getConstructor(Logger.class, AuthServer.class);
-					ob = cons.newInstance(log, auth);
+					Constructor<?> cons = servlets.get(req.resource).cl.getConstructor();
+					ob = cons.newInstance(null);
+					ob.getClass().getMethod("initialize", Logger.class, AuthServer.class).invoke(ob, log, auth);
 					ret = (String[]) ob.getClass().getMethod("doGet", Map.class).invoke(ob, req.params);
 					timers = (Map<String, Long>) ob.getClass().getMethod("destroy").invoke(ob, null);
 					if (servlets.get(req.resource).Account)
