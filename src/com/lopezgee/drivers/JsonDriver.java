@@ -24,7 +24,7 @@ import com.lopezgee.auth.User;
 public class JsonDriver implements DataBaseIF {
 	JsonDriverVars jvars;
 	File datafile;
-	List<User> Users;
+	List<User> users;
 
 	private Logger log = Logger.getLogger("JsonDriver");
 	private FileHandler fh;
@@ -61,27 +61,29 @@ public class JsonDriver implements DataBaseIF {
 		try {
 			datafile = new File(jvars.DataPath + "/" + jvars.DataFile);
 			fr = new FileReader(datafile);
-			Users = json.fromJson(fr, new TypeToken<ArrayList<User>>() {
+			users = json.fromJson(fr, new TypeToken<ArrayList<User>>() {
 			}.getType());
 			fr.close();
 		} catch (IOException e) {
 			log.log(Level.INFO, "Cannot open or initialize Database from Json file");
 			log.log(Level.INFO, "Assuming there's no Database file yet");
 			log.log(Level.INFO, "Using an empty Database instead. Close properly this Database to store it");
-			Users = new ArrayList<>();
+			users = new ArrayList<>();
 		}
 	}
 
-	public String update() {
-		return close();
+	public String close() {
+		String temp = update();
+		users = null;
+		return temp;
 	}
 	
-	public String close() {
+	public String update() {
 		Gson json = new GsonBuilder().setPrettyPrinting().create();
 		String ret = "";
 		try {
 			FileWriter fw = new FileWriter(datafile);
-			fw.write(json.toJson(Users));
+			fw.write(json.toJson(users));
 			fw.close();
 			ret = "OK";
 		} catch (IOException e) {
@@ -108,7 +110,7 @@ public class JsonDriver implements DataBaseIF {
 
 	public User getUser(String id) {
 		User user = null;
-		for (User u : Users) {
+		for (User u : users) {
 			if (u.Id.equals(id)) {
 				user = u;
 				break;
@@ -120,7 +122,7 @@ public class JsonDriver implements DataBaseIF {
 	public String createUser(User user) {
 		String ret = "";
 		if (!userExists(user.Id)) {
-			Users.add(user);
+			users.add(user);
 			log.log(Level.INFO, "Added new user with id: " + user.Id);
 			ret = "OK";
 		} else {
@@ -134,7 +136,7 @@ public class JsonDriver implements DataBaseIF {
 		String ret = "";
 		if (u != null && userExists(u.Id)) {
 			String temp = u.Id;
-			Users.remove(u);
+			users.remove(u);
 			log.log(Level.INFO, " The user with id " + temp + " was removed from the database");
 			ret = "OK";
 		} else {
@@ -147,7 +149,7 @@ public class JsonDriver implements DataBaseIF {
 	public HashMap<String, String> getInfo() {
 		HashMap<String, String> info = new HashMap<>();
 		info.put("DatabaseFile", jvars.DataPath + "/" + jvars.DataFile);
-		info.put("UsersInDatabase", Integer.toString(Users.size()));
+		info.put("UsersInDatabase", Integer.toString(users.size()));
 		info.put("DatabaseSizeOnDisk", Long.toString(datafile.length()));
 		return info;
 	}
@@ -168,7 +170,7 @@ public class JsonDriver implements DataBaseIF {
 
 	private boolean userExists(String id) {
 		boolean ret = false;
-		for (User u : Users) {
+		for (User u : users) {
 			if (u.Id.equals(id)) {
 				ret = true;
 				break;

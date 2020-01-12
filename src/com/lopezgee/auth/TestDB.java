@@ -43,6 +43,7 @@ public class TestDB {
 		
 		db = new DataBase("com.lopezgee.drivers.JsonDriver", "JsonDriver.json", log);
 		System.out.println(getInfo(db));
+		db.close();
 		
 	}
 	

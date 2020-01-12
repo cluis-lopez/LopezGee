@@ -43,6 +43,7 @@ public class AuthServer {
 			//Generate a new Token
 			UUID uuid = UUID.randomUUID();
 			db.updateToken(u, uuid.toString());
+			db.update();
 			ret[1]=uuid.toString();
 			}
 		} else {
