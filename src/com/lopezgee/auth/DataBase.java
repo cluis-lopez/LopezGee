@@ -157,4 +157,23 @@ public class DataBase implements DataBaseIF {
 		}
 		return ret;
 	}
+	
+	public String updateUser(User u, User newUserData) {
+		String ret = "";
+		try {
+			Method me = ob.getClass().getMethod("updateUser", User.class, User.class);
+			ret = (String) me.invoke(ob, u, newUserData);
+		} catch (InvocationTargetException e) {
+			log.log(Level.SEVERE, "deleteUser: Exception in invoked method");
+			log.log(Level.SEVERE, e.getMessage());
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+			ret ="Something went wrong";
+		} catch (NoSuchMethodException |SecurityException | IllegalAccessException | IllegalArgumentException e) {
+			log.log(Level.SEVERE, "deleteUser: Invocation exception");
+			log.log(Level.SEVERE, e.getMessage());
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+			ret ="Something went wrong";
+		}
+		return ret;
+	}
 }

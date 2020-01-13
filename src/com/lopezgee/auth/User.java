@@ -22,13 +22,7 @@ public class User {
 		this.Id = Id;
 		this.Name = Name;
 		Mail = Id;
-		String[] pass = new String[2];
-		try {
-			pass = Encrypt.hashPasswd(Password);
-		} catch (NoSuchAlgorithmException e) {
-			System.err.println("Cannot encrypt password. This should never happen");
-			e.printStackTrace();
-		}
+		String[] pass = encryptPasswd(Password);
 		this.Password = pass[0];
 		Salt = pass[1];
 		Token = "";
@@ -40,5 +34,17 @@ public class User {
 		LastLogin = cal.getTime();
 		TokenValidUpTo = LastLogin;
 		Blocked = false;
+	}
+	
+	public String[] encryptPasswd(String password) {
+		String[] pass = new String[2];
+		try {
+			pass = Encrypt.hashPasswd(password);
+		} catch (NoSuchAlgorithmException e) {
+			System.err.println("Cannot encrypt password. This should never happen");
+			e.printStackTrace();
+		}
+		
+		return pass;
 	}
 }

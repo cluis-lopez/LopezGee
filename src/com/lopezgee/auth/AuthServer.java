@@ -34,9 +34,6 @@ public class AuthServer {
 		} else if (Encrypt.checkPasswd(passwd, u.Password, u.Salt)) { // Valid User+Password
 			ret[0] = "OK";
 			// Check if there's already a valid token
-			System.err.println("Token valid up to: "+ u.TokenValidUpTo);
-			System.err.println("Today is: "+ new Date());
-			System.err.println("Token valid: "+ u.TokenValidUpTo.after(new Date()));
 			if (!u.Token.equals("") && u.TokenValidUpTo.after(new Date())) {
 				ret[1] = u.Token;
 			} else {

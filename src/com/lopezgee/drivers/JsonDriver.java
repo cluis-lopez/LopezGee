@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -161,6 +162,26 @@ public class JsonDriver implements DataBaseIF {
 			long t = (new Date()).getTime();
 			t += jvars.TokenValidDays + 7 * 24 * 60 * 60 * 1000; // Tiempo de validez del token en milisegundos
 			u.TokenValidUpTo = new Date(t);
+			ret = "OK";
+		} else {
+			ret = "User does not exist";
+		}
+		return ret;
+	}
+	
+	public String updateUser(User u, User newUserData) {
+		String ret = "";
+		if (userExists(u.Id)) { //We'll replace all user data except id and "User Since". Leave Token invalid
+			u.Name = newUserData.Name;
+			u.Mail = newUserData.Mail;
+			u.Password = newUserData.Password; //Warning ... should be encrypted before
+			u.Salt = newUserData.Salt;
+			u.Token = "";
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.YEAR, 1900);
+			cal.set(Calendar.MONTH, Calendar.JANUARY);
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+			u.TokenValidUpTo = cal.getTime();
 			ret = "OK";
 		} else {
 			ret = "User does not exist";

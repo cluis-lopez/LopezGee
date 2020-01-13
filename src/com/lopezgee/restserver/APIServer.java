@@ -165,12 +165,17 @@ public class APIServer implements Runnable {
 		}
 
 		try {
-			Constructor<?> cons = servlets.get(req.resource).cl.getConstructor(Logger.class);
-			ob = cons.newInstance(log);
+			Constructor<?> cons = servlets.get(req.resource).cl.getConstructor();
+			ob = cons.newInstance(null);
 			if (headerFields.get("Content-Type") != null
 					&& headerFields.get("Content-Type").equals("application/x-www-form-urlencoded")) {
 				bd = new BodyDecoder(body);
+				ob.getClass().getMethod("initialize", Logger.class, AuthServer.class).invoke(ob, log, auth);
 				ret = (String[]) ob.getClass().getMethod("doPost", Map.class).invoke(ob, bd.params);
+				timers = (Map<String, Long>) ob.getClass().getMethod("destroy").invoke(ob, null);
+				if (servlets.get(req.resource).Account)
+					writeAccntLine(servlets.get(req.resource).MountPoint, req.params.get("User"));
+				
 				resp = "HTTP/1.0 200 OK" + newLine + "Content-Type: " + ret[0] + newLine + "Date: " + new Date()
 						+ newLine + "Content-length: " + ret[1].length() + newLine + newLine + ret[1];
 			} else {
