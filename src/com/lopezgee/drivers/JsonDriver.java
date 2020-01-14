@@ -44,6 +44,8 @@ public class JsonDriver implements DataBaseIF {
 		SimpleFormatter formatter = new SimpleFormatter();
 		fh.setFormatter(formatter);
 
+		log.log(Level.INFO, "Opening Database Driver for JsonDDBB (in-mem database)");
+		
 		Gson json = new Gson();
 		jvars = null;
 		FileReader fr;

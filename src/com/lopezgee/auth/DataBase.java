@@ -31,9 +31,14 @@ public class DataBase implements DataBaseIF {
 			log.log(Level.SEVERE, "Instantiation Execption or Illegal Access");
 			log.log(Level.SEVERE, e.getMessage());
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-		} catch (IllegalArgumentException | InvocationTargetException e) {
+		} catch (IllegalArgumentException  e) {
 			log.log(Level.SEVERE, "Illegal arguments to instantiate");
 			log.log(Level.SEVERE, e.getMessage());
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+		} catch (InvocationTargetException e) {
+			log.log(Level.SEVERE, "Invocation Target Exception (problema al instanciar el driver) ");
+			log.log(Level.SEVERE, e.getMessage());
+			log.log(Level.SEVERE, Arrays.toString(e.getCause().getStackTrace()));
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 		}
 	}
