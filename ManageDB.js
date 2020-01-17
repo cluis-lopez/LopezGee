@@ -17,7 +17,7 @@ $(document).ready(function() {
 			"adminuser" : user,
 			"adminpassword" : password,
 			"DatabaseDriver" : "com.lopezgee.drivers.JsonDriver",
-			"ParamatersFile" : "JsonDriver.json",
+			"ParametersFile" : "etc/JsonDriver.json",
 			"type" : "login"}, 
 			function(data, status) {
 				console.log(data);
@@ -60,7 +60,7 @@ $(document).ready(function() {
 			"adminuser" : adminuser,
 			"adminpassword" : adminpassword,
 			"DatabaseDriver" : "com.lopezgee.drivers.JsonDriver",
-			"ParamatersFile" : "JsonDriver.json",
+			"ParametersFile" : "etc/JsonDriver.json",
 			"type" : "info"}, 
 			function(data, status) {
 				console.log(data);
@@ -73,7 +73,7 @@ $(document).ready(function() {
 			"adminuser" : adminuser,
 			"adminpassword" : adminpassword,
 			"DatabaseDriver" : "com.lopezgee.drivers.JsonDriver",
-			"ParamatersFile" : "JsonDriver.json",
+			"ParametersFile" : "etc/JsonDriver.json",
 			"id" : $("#id").val(),
 			"name" : $("#name").val(),
 			"password" : $("#password").val(),
@@ -93,7 +93,7 @@ $(document).ready(function() {
 			"adminuser" : adminuser,
 			"adminpassword" : adminpassword,
 			"DatabaseDriver" : "com.lopezgee.drivers.JsonDriver",
-			"ParamatersFile" : "JsonDriver.json",
+			"ParametersFile" : "etc/JsonDriver.json",
 			"removeid" : $("#removeid").val(),
 			"type" : "removeUser"}, 
 			function(data, status) {

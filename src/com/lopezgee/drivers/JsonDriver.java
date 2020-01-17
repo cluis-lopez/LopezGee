@@ -33,7 +33,7 @@ public class JsonDriver implements DataBaseIF {
 	public JsonDriver(String props) {
 
 		try {
-			fh = new FileHandler("JsonDriver.log", true);
+			fh = new FileHandler("logs/JsonDriver.log", true);
 		} catch (SecurityException | IOException e1) {
 			System.err.println("No se puede abrir el fichero de log");
 			e1.printStackTrace();

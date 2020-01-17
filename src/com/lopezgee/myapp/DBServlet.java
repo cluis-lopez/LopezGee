@@ -28,19 +28,19 @@ public class DBServlet extends MiniServlet {
 		Gson json = new Gson();
 
 		try {
-			fr = new FileReader(pars.get("ParamatersFile"));
+			fr = new FileReader(pars.get("ParametersFile"));
 			jvars = json.fromJson(fr, JsonDriverVars.class);
 			fr.close();
 		} catch (IOException e) {
 			log.log(Level.SEVERE, "Cannot open properties file. Exiting");
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
-			System.err.println("Json Driver: No se puede abrir el fichero de propiedades");
+			System.err.println("Json Driver: No se puede abrir el fichero de propiedades:" + pars.get("ParametersFile"));
 		}
 		// Gets initial vars for Database
 
 		if (jvars != null && pars.get("adminuser").equals(jvars.Admin)
 				&& pars.get("adminpassword").equals(jvars.Password)) {
-			DataBase db = new DataBase(pars.get("DatabaseDriver"), pars.get("ParamatersFile"), log);
+			DataBase db = new DataBase(pars.get("DatabaseDriver"), pars.get("ParametersFile"), log);
 
 			if (pars.get("type").equals("login"))
 				ret = doLogin(jvars, pars.get("adminuser"), pars.get("adminpassword"));

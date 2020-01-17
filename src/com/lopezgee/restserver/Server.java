@@ -31,7 +31,7 @@ public class Server {
 				"%1$tF %1$tT %4$s %5$s%6$s%n");
 		
 		try {
-			fd = new FileHandler("LopezGeeServer.log", true);
+			fd = new FileHandler("logs/LopezGeeServer.log", true);
 		} catch (SecurityException | IOException e1) {
 			System.err.println("No se puede abrir el fichero de log");
 			e1.printStackTrace();
@@ -47,7 +47,7 @@ public class Server {
 		FileReader reader = null;
 		
 		try {
-			reader = new FileReader("Properties.json");
+			reader = new FileReader("etc/Properties.json");
 		} catch (FileNotFoundException e) {
 			log.log(Level.SEVERE, "Cannot open properties file. Exiting");
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));

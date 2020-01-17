@@ -3,8 +3,8 @@
     "Root": ".",
     "AppPath": "com.lopezgee.myapp",
     "AuthDriver": "com.lopezgee.drivers.JsonDriver",
-    "DataBasePropsFile": "JsonDriver.json",
-    "AccountingFile": "LopezgeeAccnt.log",
+    "DataBasePropsFile": "etc/JsonDriver.json",
+    "AccountingFile": "logs/LopezgeeAccnt.log",
     "Servlets": [
     	{ "MountPoint": "/dbservlet", "ClassName": "DBServlet", "Auth": false, "Account": false},
         {"MountPoint": "/Login", "ClassName": "Login", "Auth": false, "Account": false},

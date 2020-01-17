@@ -86,7 +86,7 @@ public class APIServer implements Runnable {
 		// Logging
 
 		log.log(Level.INFO, "Serving {0}",
-				reqLine.command + " " + reqLine.resource + " from " + headerFields.get("Origin"));
+				reqLine.command + " " + reqLine.resource + " from " + socket.getInetAddress().toString());
 
 		String response = "";
 
@@ -140,9 +140,14 @@ public class APIServer implements Runnable {
 						writeAccntLine(servlets.get(req.resource).MountPoint, req.params.get("User"));
 					
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-						| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+						| NoSuchMethodException | SecurityException e) {
 					log.log(Level.SEVERE, "Cannot instantiate servlet");
 					log.log(Level.SEVERE, e.toString());
+					log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+				} catch (InvocationTargetException e ) {
+					log.log(Level.SEVERE, "Invocation Target Exception (problema al instanciar el servlet) ");
+					log.log(Level.SEVERE, e.getMessage());
+					log.log(Level.SEVERE, Arrays.toString(e.getCause().getStackTrace()));
 					log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 				}
 				resp = "HTTP/1.0 200 OK" + newLine + "Content-Type: " + ret[0] + newLine + "Date: " + new Date()
@@ -181,9 +186,14 @@ public class APIServer implements Runnable {
 			} else {
 				resp = "HTTP/1.0 404 Improper post request" + newLine + newLine;
 			}
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 				| NoSuchMethodException | SecurityException | UnsupportedEncodingException e) {
 			log.log(Level.SEVERE, "Cannot instantiate servlet");
+			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
+		} catch (InvocationTargetException e ) {
+			log.log(Level.SEVERE, "Invocation Target Exception (problema al instanciar el servlet) ");
+			log.log(Level.SEVERE, e.getMessage());
+			log.log(Level.SEVERE, Arrays.toString(e.getCause().getStackTrace()));
 			log.log(Level.SEVERE, Arrays.toString(e.getStackTrace()));
 		}
 
