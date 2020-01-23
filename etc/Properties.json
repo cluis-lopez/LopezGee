@@ -6,9 +6,9 @@
     "DataBasePropsFile": "etc/JsonDriver.json",
     "AccountingFile": "logs/LopezgeeAccnt.log",
     "Servlets": [
-    	{ "MountPoint": "/dbservlet", "ClassName": "DBServlet", "Auth": false, "Account": false},
+    	{"MountPoint": "/dbservlet", "ClassName": "DBServlet", "Auth": false, "Account": false},
         {"MountPoint": "/Login", "ClassName": "Login", "Auth": false, "Account": false},
-        {"MountPoint": "/Loader", "ClassName": "Loader", "Auth": true, "Account": false},
+        {"MountPoint": "/Loader", "ClassName": "Loader", "Auth": true, "Account": true},
         {"MountPoint": "/Tester", "ClassName": "Tester", "Auth": true, "Account": false}
    ]
 }

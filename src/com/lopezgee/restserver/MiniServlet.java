@@ -1,5 +1,7 @@
 package com.lopezgee.restserver;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -10,14 +12,18 @@ public class MiniServlet {
 	
 	protected Logger log;
 	protected Map<String, Long> servletTimers;
-	protected long tinit;
+	protected long rtinit, cpuinit;
 	protected AuthServer authServer;
+	protected ThreadMXBean threadMXBean;
 	
 	public void initialize (Logger log, AuthServer auths) {
 		this.log = log;
 		this.authServer = auths;
 		servletTimers = new HashMap<>();
-		tinit = System.nanoTime();
+		threadMXBean = ManagementFactory.getThreadMXBean();
+		threadMXBean.setThreadContentionMonitoringEnabled(true);
+		rtinit = System.nanoTime();
+		cpuinit = threadMXBean.getCurrentThreadCpuTime();
 	}
 	
 	public String[] doGet(Map<String, String> map) {
@@ -37,7 +43,8 @@ public class MiniServlet {
 	};
 	
 	public final Map<String, Long> destroy() {
-		servletTimers.put("main", System.nanoTime()-tinit);
+		servletTimers.put("mainRT", System.nanoTime() - rtinit);
+		servletTimers.put("mainCPU", threadMXBean.getCurrentThreadCpuTime() - cpuinit);
 		return servletTimers;
 	}
 }
