@@ -122,7 +122,7 @@ public class APIServer implements Runnable {
 		} else {
 			Object ob = null;
 
-			// Chequeamos si se requiere autentificacion y en su caso, si es válida
+			// Chequeamos si se requiere autentificacion y en su caso, si es valida
 
 			boolean validToken = servlets.get(req.resource).Auth && req.params.get("User") != null
 					&& req.params.get("Token") != null

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="RESTServer">
+	<property environment="env" />
+	<property name="ECLIPSE_HOME" value="../../Eclipse/eclipse/" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.8" />
+	<property name="source" value="1.8" />
+	<property name="src" location="src" />
+	<property name="build" location="build" />
+	<property name="dist" location="dist" />
+	<property name="version" value="1.0" />
+
+
+	<path id="RESTServer.classpath">
+		<pathelement location="bin" />
+		<pathelement location="lib/gson-2.8.0.jar" />
+	</path>
+
+
+	<target name="init">
+		<!-- Create the time stamp -->
+		<tstamp />
+		<!-- Create the build directory structure used by compile -->
+		<mkdir dir="${build}" />
+	</target>
+
+	<target name="compile" depends="init" description="compile the source">
+		<!-- Compile the java code from ${src} into ${build} -->
+		<javac srcdir="${src}" destdir="${build}">
+			<classpath refid="RESTServer.classpath" />
+		</javac>
+	</target>
+
+	<target name="dist" depends="compile" description="generate the distribution">
+		<buildnumber />
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist}" />
+
+		<!-- Put everything in ${build} into the MyApplication-${version}.${build.number}.jar -->
+		<copy todir="${build}" file="ManageDB.html"/>
+		<copy todir="${build}" file="ManageDB.js"/>
+		<copy todir="${build}" file="index.html"/>
+		<copy todir="${build}/lib">
+			<fileset dir="lib" />
+		</copy>
+		<jar destfile="${dist}/ApiServer-${version}.jar" basedir="${build}" />
+		<echo message="uploading the jar file to server using pscp" />
+		<exec executable="pscp.exe">
+			<arg value="-v" />
+			<arg value="-pw" />
+			<arg value="j0rasse1" />
+			<arg value="${dist}/ApiServer-${version}.jar" />
+			<arg value="clopez@192.168.1.38:conte/ApiServer-${version}.jar" />
+		</exec>
+		<echo message="Launching building, testing and deploying in Jenkins" />
+		<exec executable="curl">
+			<arg value="http://remote:1234@192.168.1.38:8080/user/remote/my-views/view/all/job/ApiServer%20in%20Azure/build?token=despliega" />
+		</exec>
+		<echo message="Done invoking Jenkions job" />
+
+	</target>
+
+	<target name="clean" description="clean up">
+		<!-- Delete the ${build} and ${dist} directory trees -->
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+	</target>
+</project>

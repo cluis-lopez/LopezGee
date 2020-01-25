@@ -66,7 +66,7 @@ public class Server {
 			}
 		}
 			
-		//Arrancando el sistema de autentificación
+		//Arrancando el sistema de autentificacion
 		
 		AuthServer authserver = new AuthServer(props.AuthDriver, props.DataBasePropsFile, log);
 
